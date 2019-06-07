@@ -27,11 +27,13 @@
                  xsi:noNamespaceSchemaLocation="urn:schemas-jetbrains-com:teamcity-plugin-v1-xml">
     <info>
         <name>tc-discord-webhooks</name>
-        <display-name>tc-discord-webhooks</display-name>
+        <display-name>TC Discord WebHooks</display-name>
         <version>@Version@</version>
-        <description>Plugin description</description>
+        <description>A TeamCity plugin which allows the easy creation of Discord WebHooks to notify users on a Discord
+            server about the current build status of projects.
+        </description>
         <download-url>Plugin download URL</download-url>
-        <email>Plugin author e-mail</email>
+        <email>p.zarrad@outlook.de</email>
         <vendor>
             <name>@VendorName@</name>
             <url>@VendorURL@</url>
