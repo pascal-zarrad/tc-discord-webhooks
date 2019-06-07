@@ -1,1 +1,1 @@
-# TeamCity Discord WebHooks
+# TeamCity Discord WebHooks [![Build Status](https://travis-ci.com/PlayerForceHD/tc-discord-webhooks.svg?token=gjN24nudi96G8T4qLD5E&branch=master)](https://travis-ci.com/PlayerForceHD/tc-discord-webhooks)
