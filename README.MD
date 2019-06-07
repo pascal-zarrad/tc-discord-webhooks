@@ -9,8 +9,9 @@ A TeamCity plugin which allows the easy creation of Discord WebHooks to notify u
  - Per project configuration and global configuration
 
 ### Installation
-Simply put the plugins ZIP file into the plugins directory of your TeamCity server and restart it, 
-or upload the plugin using the settings page of your TeamCity installation.
+Simply put the plugins ZIP file into the plugins directory of your TeamCity server and restart it.
+ 
+You should also be able to upload the plugin using the settings page of your TeamCity installation.
 
 ## Development
 
