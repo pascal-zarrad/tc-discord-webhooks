@@ -8,6 +8,9 @@ A TeamCity plugin which allows the easy creation of Discord WebHooks to notify u
  - Beautiful messages out of the box, while being still customizable
  - Per project configuration and global configuration
 
+### System Requirements
+To use this plugin you need at least TeamCity 2018.2 and Java 8.
+
 ### Installation
 Simply put the plugins ZIP file into the plugins directory of your TeamCity server and restart it.
  
