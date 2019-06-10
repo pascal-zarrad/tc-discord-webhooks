@@ -111,6 +111,9 @@ public class DiscordEmbed {
         this.fields = fields;
     }
 
+    public DiscordEmbed() {
+    }
+
     public String getTitle() {
         return title;
     }

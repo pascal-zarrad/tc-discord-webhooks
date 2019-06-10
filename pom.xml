@@ -78,6 +78,22 @@
 
 
     <dependencies>
+        <!-- Production dependencies -->
+        <!--
+            All dependencies that are included in TeamCity's server are added
+            in the scope "provided".
+            If the TeamCity developers would change or remove any of the dependencies
+            of this project, they can be simply re-added by setting the
+            scope to "compile"!
+        -->
+        <!-- Google GSON -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Test dependencies -->
         <!-- TestNG -->
         <dependency>
             <groupId>org.testng</groupId>

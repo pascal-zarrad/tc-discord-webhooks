@@ -58,6 +58,9 @@ public class DiscordEmbedField {
         this.inline = inline;
     }
 
+    public DiscordEmbedField() {
+    }
+
     public String getName() {
         return name;
     }

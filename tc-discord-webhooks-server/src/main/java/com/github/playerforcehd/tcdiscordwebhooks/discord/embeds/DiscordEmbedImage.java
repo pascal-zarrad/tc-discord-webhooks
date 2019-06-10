@@ -43,6 +43,9 @@ public class DiscordEmbedImage {
         this.url = url;
     }
 
+    public DiscordEmbedImage() {
+    }
+
     public String getUrl() {
         return url;
     }

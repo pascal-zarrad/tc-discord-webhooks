@@ -26,6 +26,12 @@ package com.github.playerforcehd.tcdiscordwebhooks.discord;
 
 import com.google.gson.Gson;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
 /**
  * Handles the communication between the Discord WebHook API and the TeamCity server.
  * Also handles the serialization of the Discord WebHook Payloads
@@ -33,6 +39,8 @@ import com.google.gson.Gson;
  * @author Pascal Zarrad
  */
 public class DiscordWebHookProcessor {
+
+    public static final String HTTP_CHARSET = StandardCharsets.UTF_8.toString();
 
     /**
      * The GSON instance used to serialize the {@link DiscordWebHookPayload}'s
@@ -43,12 +51,45 @@ public class DiscordWebHookProcessor {
         this.GSON = new Gson();
     }
 
-    public void sendDiscordWebHook(String webHookURL, DiscordWebHookPayload discordWebHookPayload) {
-
+    /**
+     * Send a WebHook request to the Discord API.
+     * This method accepts a {@link DiscordWebHookPayload} as argument and serialises it before sending it.
+     *
+     * @param webHookURL            The URL of the WebHook that is targeted
+     * @param discordWebHookPayload The payload which contains the content to send
+     * @return true if the request succeeded
+     * @throws IOException Thrown when any I/O operation fails
+     */
+    public boolean sendDiscordWebHook(String webHookURL, DiscordWebHookPayload discordWebHookPayload) throws IOException {
+        return this.sendDiscordWebHook(webHookURL, this.serializeDiscordWebHookPayload(discordWebHookPayload));
     }
 
-    public void sendDiscordWebHook(String webHookURL, String discordWebHookPayload) {
-
+    /**
+     * Send a WebHook request to the Discord API
+     *
+     * @param webHookURL            The URL of the WebHook that is targeted
+     * @param discordWebHookPayload The payload which contains the content to send
+     * @return true if the request succeeded
+     * @throws IOException Thrown when any I/O operation fails
+     */
+    public boolean sendDiscordWebHook(String webHookURL, String discordWebHookPayload) throws IOException {
+        // Prepare POST data
+        byte[] data = discordWebHookPayload.getBytes(HTTP_CHARSET);
+        // Send Discord WebHook
+        URL url = new URL(webHookURL);
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setRequestMethod("POST");
+        httpURLConnection.setRequestProperty("User-Agent", "TeamCity Discord WebHook v1");
+        httpURLConnection.setRequestProperty("Content-Length", String.valueOf(data.length));
+        httpURLConnection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        httpURLConnection.setRequestProperty("Content-Type", "application/json");
+        httpURLConnection.setDoOutput(true);
+        DataOutputStream out = new DataOutputStream(httpURLConnection.getOutputStream());
+        out.write(data, 0, data.length);
+        out.flush();
+        out.close();
+        int responseCode = httpURLConnection.getResponseCode();
+        return responseCode == 204; // When request returned status 204, the request was a success
     }
 
     /**
@@ -57,7 +98,7 @@ public class DiscordWebHookProcessor {
      * @param discordWebHookPayload The payload the serialize
      * @return The JSOn string of the {@link DiscordWebHookPayload}
      */
-    public String serializeDiscordWebHookPalyoad(DiscordWebHookPayload discordWebHookPayload) {
+    public String serializeDiscordWebHookPayload(DiscordWebHookPayload discordWebHookPayload) {
         return this.GSON.toJson(discordWebHookPayload);
     }
 

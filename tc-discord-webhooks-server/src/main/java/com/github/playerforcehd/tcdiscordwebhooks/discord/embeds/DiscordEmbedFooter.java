@@ -46,6 +46,9 @@ public class DiscordEmbedFooter {
         this.icon_url = icon_url;
     }
 
+    public DiscordEmbedFooter() {
+    }
+
     public DiscordEmbedFooter(String text) {
         this.text = text;
     }

@@ -61,6 +61,9 @@ public class DiscordAuthorEmbed {
         this.name = name;
     }
 
+    public DiscordAuthorEmbed() {
+    }
+
     public String getName() {
         return name;
     }

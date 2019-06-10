@@ -34,8 +34,11 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 /**
  * Tests to check if the DiscordWebHookPayload's are working properly.
@@ -121,7 +124,7 @@ public class DiscordWebHookTest {
         // Create DiscordWebHookProcessor
         DiscordWebHookProcessor discordWebHookProcessor = new DiscordWebHookProcessor();
         // Serialize the DiscordWebHookPayload into a JSON string
-        String discordWebHookPayloadJSON = discordWebHookProcessor.serializeDiscordWebHookPalyoad(discordWebHookPayload);
+        String discordWebHookPayloadJSON = discordWebHookProcessor.serializeDiscordWebHookPayload(discordWebHookPayload);
         // Parse our created payload
         JsonParser parser = new JsonParser();
         JsonObject payloadElement = (JsonObject) parser.parse(discordWebHookPayloadJSON);
@@ -131,4 +134,65 @@ public class DiscordWebHookTest {
         assertEquals(payloadElement, referenceElement, "The serialized payload element does not equal to the reference element!");
     }
 
+    /**
+     * Test if the {@link DiscordWebHookProcessor#sendDiscordWebHook(String, String)} sends a valid WebHook request
+     */
+    @Test
+    public void testValidDiscordWebHook() {
+        // Create a DiscordWebHookPayload
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload("Test User", "http://localhost/myAvatar.png", false, "This is great content!", new DiscordEmbed[]{
+                new DiscordEmbed("Embed Title!", "My Description", "https://discordapp.com/", DiscordEmbedColor.RED,
+                        new DiscordEmbedFooter("Test Text", "http://localhost/footerIcon.png"),
+                        new DiscordEmbedImage("http://localhost/EmbeddedImage.png"),
+                        new DiscordEmbedImage("http://localhost/thumbnail.png"),
+                        new DiscordEmbedField[]{
+                                new DiscordEmbedField("An embedded field", "This is an embedded field!")
+                        })
+        });
+        // Create DiscordWebHookProcessor
+        DiscordWebHookProcessor discordWebHookProcessor = new DiscordWebHookProcessor();
+        String discordWebHookContent = discordWebHookProcessor.serializeDiscordWebHookPayload(discordWebHookPayload);
+        // Configure WireMock
+        String localRequestUrl = "http://" + this.wireMockServer.getOptions().bindAddress() + ":" + this.wireMockServer.port() + "/anyWebHookID/anyWebHookToken";
+        this.wireMockServer.stubFor(any(urlPathEqualTo("/anyWebHookID/anyWebHookToken"))
+                .withHeader("User-Agent", equalTo("TeamCity Discord WebHook v1"))
+                .withHeader("Accept-Language", equalTo("en-US,en;q=0.5"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson(discordWebHookContent))
+                .willReturn(noContent())
+        );
+        // Send WebHook
+        try {
+            assertTrue(discordWebHookProcessor.sendDiscordWebHook(localRequestUrl, discordWebHookPayload), "The send request should end up in Error 204 (No content) and trigger a return true, which represents a valid request!");
+        } catch (IOException e) {
+            fail("Failed to send Discord WebHook due to an IOException!", e);
+        }
+    }
+
+    /**
+     * Test if the {@link DiscordWebHookProcessor#sendDiscordWebHook(String, String)} fails when sending an invalid request
+     */
+    @Test
+    public void testValidDiscordWebHookFailsForInvalidContent() {
+        // Create a DiscordWebHookPayload
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload(null, null, false, null);
+        // Create DiscordWebHookProcessor
+        DiscordWebHookProcessor discordWebHookProcessor = new DiscordWebHookProcessor();
+        String discordWebHookContent = discordWebHookProcessor.serializeDiscordWebHookPayload(discordWebHookPayload);
+        // Configure WireMock
+        String localRequestUrl = "http://" + this.wireMockServer.getOptions().bindAddress() + ":" + this.wireMockServer.port() + "/anyWebHookID/anyWebHookToken";
+        this.wireMockServer.stubFor(any(urlPathEqualTo("/anyWebHookID/anyWebHookToken"))
+                .withHeader("User-Agent", equalTo("TeamCity Discord WebHook v1"))
+                .withHeader("Accept-Language", equalTo("en-US,en;q=0.5"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson(discordWebHookContent)) // Using the example payload content to check here.
+                .willReturn(badRequest())
+        );
+        // Send WebHook
+        try {
+            assertFalse(discordWebHookProcessor.sendDiscordWebHook(localRequestUrl, discordWebHookPayload), "The WebServer accepted the request, but the content did not equal a valid format or had valid content!");
+        } catch (IOException e) {
+            fail("Failed to send Discord WebHook due to an IOException!", e);
+        }
+    }
 }

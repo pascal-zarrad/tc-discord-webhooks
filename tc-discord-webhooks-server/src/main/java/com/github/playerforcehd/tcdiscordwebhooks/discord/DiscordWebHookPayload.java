@@ -108,6 +108,9 @@ public class DiscordWebHookPayload {
         this.embeds = embeds;
     }
 
+    public DiscordWebHookPayload() {
+    }
+
     public String getUsername() {
         return username;
     }
