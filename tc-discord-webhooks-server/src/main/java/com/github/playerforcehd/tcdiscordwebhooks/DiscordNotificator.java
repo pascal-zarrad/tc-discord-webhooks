@@ -44,7 +44,7 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * The Notificator service that handles triggered notifications
+ * The {@link Notificator} service that handles triggered notifications
  *
  * @author Pascal Zarrad
  */
