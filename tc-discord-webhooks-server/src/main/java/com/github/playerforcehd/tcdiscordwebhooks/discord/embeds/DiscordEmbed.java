@@ -41,11 +41,6 @@ package com.github.playerforcehd.tcdiscordwebhooks.discord.embeds;
 public class DiscordEmbed {
 
     /**
-     * The type of the embed.
-     * This implementation only supports the type "rich".
-     */
-    private final String type = "rich";
-    /**
      * The title that of the embed
      */
     private String title;
@@ -122,10 +117,6 @@ public class DiscordEmbed {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public String getDescription() {

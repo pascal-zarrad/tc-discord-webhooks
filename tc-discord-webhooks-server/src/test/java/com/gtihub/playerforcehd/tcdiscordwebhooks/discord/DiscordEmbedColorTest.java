@@ -25,8 +25,10 @@
 package com.gtihub.playerforcehd.tcdiscordwebhooks.discord;
 
 import com.github.playerforcehd.tcdiscordwebhooks.discord.embeds.DiscordEmbedColor;
-import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 /**
  * Tests the {@link DiscordEmbedColor#convertHexToDecColor(String)} method which
@@ -48,9 +50,9 @@ public class DiscordEmbedColorTest {
     public void testConversionOfHexToDecColor() {
         try {
             int decimalColorCode = DiscordEmbedColor.convertHexToDecColor(this.hexColor);
-            Assert.assertEquals(decimalColorCode, 14361893, "Expected decimal color code to be 14361893 but got " + decimalColorCode + "!");
+            assertEquals(decimalColorCode, 14361893, "Expected decimal color code to be 14361893 but got " + decimalColorCode + "!");
         } catch (NumberFormatException e) {
-            Assert.fail("Failed to convert hexadecimal to decimal color code.", e);
+            fail("Failed to convert hexadecimal to decimal color code.", e);
         }
     }
 
@@ -63,9 +65,9 @@ public class DiscordEmbedColorTest {
         try {
             String hexColorWithDiamond = "#" + this.hexColor;
             int decimalColorCode = DiscordEmbedColor.convertHexToDecColor(hexColorWithDiamond);
-            Assert.assertEquals(decimalColorCode, 14361893, "Expected decimal color code to be 14361893 but got " + decimalColorCode + "!");
+            assertEquals(decimalColorCode, 14361893, "Expected decimal color code to be 14361893 but got " + decimalColorCode + "!");
         } catch (NumberFormatException e) {
-            Assert.fail("Failed to convert hexadecimal to decimal color code.", e);
+            fail("Failed to convert hexadecimal to decimal color code.", e);
         }
     }
 
@@ -77,10 +79,10 @@ public class DiscordEmbedColorTest {
         String invalidHexadecimalString = "a24fZ"; // Z is not a hexadecimal digit
         try {
             DiscordEmbedColor.convertHexToDecColor(invalidHexadecimalString);
-            Assert.fail("Entering an invalid hexadecimal string should result in a NumberFormatException!");
+            fail("Entering an invalid hexadecimal string should result in a NumberFormatException!");
         } catch (Exception e) {
             if (!(e instanceof NumberFormatException)) {
-                Assert.fail("The thrown exception was expected to be a NumberFormatException but got any other exception!", e);
+                fail("The thrown exception was expected to be a NumberFormatException but got any other exception!", e);
             }
         }
     }

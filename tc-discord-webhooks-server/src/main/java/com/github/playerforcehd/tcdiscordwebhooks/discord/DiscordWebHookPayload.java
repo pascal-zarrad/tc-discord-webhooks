@@ -64,7 +64,24 @@ public class DiscordWebHookPayload {
     private DiscordEmbed[] embeds;
 
     /**
-     * Creates a new DiscordPayload that is prepared to be send as a simple text message
+     * Creates a new {@link DiscordWebHookPayload} that is prepared to send a simple text message bundled with an embed.
+     *
+     * @param username   The username that will be used as the sender username
+     * @param avatar_url The url to the avatar to use in the message
+     * @param tts        Enable or disable the text-to-speech feature for this message
+     * @param content    The content as a simple text message that should be send with the payload
+     * @param embeds     The embeds that should be send with the payload
+     */
+    public DiscordWebHookPayload(String username, String avatar_url, boolean tts, String content, DiscordEmbed[] embeds) {
+        this.username = username;
+        this.avatar_url = avatar_url;
+        this.tts = tts;
+        this.content = content;
+        this.embeds = embeds;
+    }
+
+    /**
+     * Creates a new {@link DiscordWebHookPayload} that is prepared to be send as a simple text message
      *
      * @param username   The username that will be used as the sender username
      * @param avatar_url The url to the avatar to use in the message
@@ -79,7 +96,7 @@ public class DiscordWebHookPayload {
     }
 
     /**
-     * Creates a new DiscordPayload that is prepared to be send bundled with {@link DiscordEmbed}'s
+     * Creates a new {@link DiscordWebHookPayload} that is prepared to be send bundled with {@link DiscordEmbed}'s
      *
      * @param username   The username that will be used as the sender username
      * @param avatar_url The url to the avatar to use in the message
