@@ -26,12 +26,10 @@ package com.github.playerforcehd.tcdiscordwebhooks;
 
 import jetbrains.buildServer.Build;
 import jetbrains.buildServer.notification.Notificator;
+import jetbrains.buildServer.notification.NotificatorRegistry;
 import jetbrains.buildServer.responsibility.ResponsibilityEntry;
 import jetbrains.buildServer.responsibility.TestNameResponsibilityEntry;
-import jetbrains.buildServer.serverSide.SBuildType;
-import jetbrains.buildServer.serverSide.SProject;
-import jetbrains.buildServer.serverSide.SRunningBuild;
-import jetbrains.buildServer.serverSide.STest;
+import jetbrains.buildServer.serverSide.*;
 import jetbrains.buildServer.serverSide.mute.MuteInfo;
 import jetbrains.buildServer.serverSide.problems.BuildProblemInfo;
 import jetbrains.buildServer.tests.TestName;
@@ -40,6 +38,7 @@ import jetbrains.buildServer.vcs.VcsRoot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
@@ -49,6 +48,31 @@ import java.util.Set;
  * @author Pascal Zarrad
  */
 public class DiscordNotificator implements Notificator {
+
+    // ---- Information about this Notificator
+
+    /**
+     * The type of this {@link Notificator}
+     */
+    private static final String TYPE = "DiscordWebHookNotificator";
+
+    /**
+     * The display name of this notificator
+     */
+    private static final String DISPLAY_NAME = "Discord WebHook";
+
+    // ---- UserProperties of this Notificator
+
+    /**
+     * Name of the property that defines the URL of the WebHook
+     */
+    private static final String WEBHOOK_URL = "WebHookURL";
+
+    public DiscordNotificator(NotificatorRegistry notificatorRegistry) {
+        ArrayList<UserPropertyInfo> userProperties = new ArrayList<>();
+        userProperties.add(new UserPropertyInfo(WEBHOOK_URL, "WebHook URL"));
+        notificatorRegistry.register(this, userProperties);
+    }
 
     @Override
     public void notifyBuildStarted(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> set) {
@@ -148,12 +172,12 @@ public class DiscordNotificator implements Notificator {
     @NotNull
     @Override
     public String getNotificatorType() {
-        return null;
+        return TYPE;
     }
 
     @NotNull
     @Override
     public String getDisplayName() {
-        return null;
+        return DISPLAY_NAME;
     }
 }
