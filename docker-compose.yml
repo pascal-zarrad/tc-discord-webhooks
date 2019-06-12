@@ -1,23 +1,11 @@
 version: '2'
 
 services:
-  postgres:
-    image: postgres:latest
-    volumes:
-      - /srv/postgresql/data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=teamcity
-      - POSTGRES_USER=teamcity
-      - POSTGRES_DB=teamcity
-    ports:
-      - "5432:5432"
-
   teamcity:
     restart: on-failure
     image: jetbrains/teamcity-server:latest
-    depends_on:
-      - java
     volumes:
+      - ./target/tc-discord-webhooks.zip:/data/teamcity_server/datadir/tc-discord-webhooks.zip
       - /srv/teamcity/data:/data/teamcity_server/datadir
       - /srv/teamcity/logs:/opt/teamcity/logs
     ports:
@@ -27,7 +15,7 @@ services:
     restart: on-failure
     image: lunarfrog/teamcity-agent-dotnet:latest
     depends_on:
-      - java
+      - teamcity
     links:
       - teamcity:teamcity
     volumes:
@@ -35,8 +23,3 @@ services:
     environment:
       - SERVER_URL=teamcity:8111
       - AGENT_NAME="tcagent_docker"
-
-  java:
-    restart: on-failure
-    image: openjdk:8u212-jdk
-
