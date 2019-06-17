@@ -59,9 +59,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/PlayerForceHD/tc-discord-webhooks.git</connection>
-        <developerConnection>scm:git:ssh://github.com/PlayerForceHD/tc-discord-webhooks.git</developerConnection>
-        <url>https://github.com/PlayerForceHD/tc-discord-webhooks/tree/master</url>
+        <connection>scm:git:git://github.com/pascal-zarrad/tc-discord-webhooks.git</connection>
+        <developerConnection>scm:git:ssh://github.com/pascal-zarrad/tc-discord-webhooks.git</developerConnection>
+        <url>https://github.com/pascal-zarrad/tc-discord-webhooks/tree/master</url>
     </scm>
 
     <repositories>
