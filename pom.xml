@@ -36,6 +36,7 @@
     <description>A TeamCity plugin which allows the easy creation of Discord WebHooks to notify users on a Discord
         server about the current build status of projects.
     </description>
+    <url>https://github.com/pascal-zarrad/tc-discord-webhooks</url>
 
     <properties>
         <teamcity-version>2018.2</teamcity-version>
