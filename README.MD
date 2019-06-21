@@ -5,8 +5,7 @@ A TeamCity plugin which allows the easy creation of Discord WebHooks to notify u
 **Features:**
  - Discord Integration to get notified on a Discord server
  - Simple setup
- - Beautiful messages out of the box, while being still customizable
- - Per project configuration and global configuration
+ - Beautiful messages out of the box
 
 ### System Requirements
 To use this plugin you need at least TeamCity 2018.2 and Java 8.
@@ -43,17 +42,7 @@ The development setup is composed using the following software:
  
 To setup the containers and start them take a look at the commands below.
 After the container have been started you can open TeamCity in your browser.
-The setup will ask you to connect to a database. There you can continue with the included 
-database or connect to the PostgreSQL database.
 
-Login data for PostgreSQL:
-```
-Host: <container-ip>:5432
-User: teamcity
-Paswword: teamcity
-Database: teamcity
-```
- 
 Setup:
 ```docker-compose build```
 
