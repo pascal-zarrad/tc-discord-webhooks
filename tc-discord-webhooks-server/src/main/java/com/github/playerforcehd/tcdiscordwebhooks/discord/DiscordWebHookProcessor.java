@@ -25,10 +25,14 @@
 package com.github.playerforcehd.tcdiscordwebhooks.discord;
 
 import com.google.gson.Gson;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
@@ -40,7 +44,10 @@ import java.nio.charset.StandardCharsets;
  */
 public class DiscordWebHookProcessor {
 
-    public static final String HTTP_CHARSET = StandardCharsets.UTF_8.toString();
+    /**
+     * The charset used for the requests
+     */
+    private static final String HTTP_CHARSET = StandardCharsets.UTF_8.toString();
 
     /**
      * The GSON instance used to serialize the {@link DiscordWebHookPayload}'s
@@ -58,9 +65,11 @@ public class DiscordWebHookProcessor {
      * @param webHookURL            The URL of the WebHook that is targeted
      * @param discordWebHookPayload The payload which contains the content to send
      * @return true if the request succeeded
-     * @throws IOException Thrown when any I/O operation fails
+     * @throws IOException        Thrown when any I/O operation fails
+     * @throws URISyntaxException Thrown when the given #webHookURL is invalid
+     * @see DiscordWebHookProcessor#sendDiscordWebHook(String, String)
      */
-    public boolean sendDiscordWebHook(String webHookURL, DiscordWebHookPayload discordWebHookPayload) throws IOException {
+    public boolean sendDiscordWebHook(String webHookURL, DiscordWebHookPayload discordWebHookPayload) throws IOException, URISyntaxException {
         return this.sendDiscordWebHook(webHookURL, this.serializeDiscordWebHookPayload(discordWebHookPayload));
     }
 
@@ -70,25 +79,23 @@ public class DiscordWebHookProcessor {
      * @param webHookURL            The URL of the WebHook that is targeted
      * @param discordWebHookPayload The payload which contains the content to send
      * @return true if the request succeeded
-     * @throws IOException Thrown when any I/O operation fails
+     * @throws IOException        Thrown when any I/O operation fails
+     * @throws URISyntaxException Thrown when the given #webHookURL is invalid
      */
-    public boolean sendDiscordWebHook(String webHookURL, String discordWebHookPayload) throws IOException {
-        // Prepare POST data
-        byte[] data = discordWebHookPayload.getBytes(HTTP_CHARSET);
+    public boolean sendDiscordWebHook(String webHookURL, String discordWebHookPayload) throws IOException, URISyntaxException {
         // Send Discord WebHook
         URL url = new URL(webHookURL);
-        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-        httpURLConnection.setRequestMethod("POST");
-        httpURLConnection.setRequestProperty("User-Agent", "TeamCity Discord WebHook v1");
-        httpURLConnection.setRequestProperty("Content-Length", String.valueOf(data.length));
-        httpURLConnection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        httpURLConnection.setRequestProperty("Content-Type", "application/json");
-        httpURLConnection.setDoOutput(true);
-        DataOutputStream out = new DataOutputStream(httpURLConnection.getOutputStream());
-        out.write(data, 0, data.length);
-        out.flush();
-        out.close();
-        int responseCode = httpURLConnection.getResponseCode();
+        int responseCode; // We default to 400, when request succeeded, this should be 204
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPost httpPost = new HttpPost(url.toURI());
+            httpPost.addHeader("User-Agent", "TeamCity Discord WebHook v1");
+            httpPost.addHeader("Accept-Language", "en-US,en;q=0.5");
+            httpPost.addHeader("Content-Type", "application/json");
+            httpPost.setEntity(new StringEntity(discordWebHookPayload, HTTP_CHARSET));
+            try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                responseCode = response.getStatusLine().getStatusCode();
+            }
+        }
         return responseCode == 204; // When request returned status 204, the request was a success
     }
 

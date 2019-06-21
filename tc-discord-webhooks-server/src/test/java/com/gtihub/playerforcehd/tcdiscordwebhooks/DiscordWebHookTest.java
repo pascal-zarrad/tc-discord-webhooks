@@ -35,6 +35,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
@@ -164,7 +165,7 @@ public class DiscordWebHookTest {
         // Send WebHook
         try {
             assertTrue(discordWebHookProcessor.sendDiscordWebHook(localRequestUrl, discordWebHookPayload), "The send request should end up in Error 204 (No content) and trigger a return true, which represents a valid request!");
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             fail("Failed to send Discord WebHook due to an IOException!", e);
         }
     }
@@ -191,7 +192,7 @@ public class DiscordWebHookTest {
         // Send WebHook
         try {
             assertFalse(discordWebHookProcessor.sendDiscordWebHook(localRequestUrl, discordWebHookPayload), "The WebServer accepted the request, but the content did not equal a valid format or had valid content!");
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             fail("Failed to send Discord WebHook due to an IOException!", e);
         }
     }
