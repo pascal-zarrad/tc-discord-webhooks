@@ -36,7 +36,6 @@
     <description>A TeamCity plugin which allows the easy creation of Discord WebHooks to notify users on a Discord
         server about the current build status of projects.
     </description>
-    <url>https://github.com/pascal-zarrad/tc-discord-webhooks</url>
 
     <properties>
         <teamcity-version>2018.2</teamcity-version>
@@ -60,9 +59,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/pascal-zarrad/tc-discord-webhooks.git</connection>
-        <developerConnection>scm:git:ssh://github.com/pascal-zarrad/tc-discord-webhooks.git</developerConnection>
-        <url>https://github.com/pascal-zarrad/tc-discord-webhooks/tree/master</url>
+        <connection>scm:git:git://github.com/PlayerForceHD/tc-discord-webhooks.git</connection>
+        <developerConnection>scm:git:ssh://github.com/PlayerForceHD/tc-discord-webhooks.git</developerConnection>
+        <url>https://github.com/PlayerForceHD/tc-discord-webhooks/tree/master</url>
     </scm>
 
     <repositories>
@@ -79,6 +78,28 @@
 
 
     <dependencies>
+        <!-- Production dependencies -->
+        <!--
+            All dependencies that are included in TeamCity's server are added
+            in the scope "provided".
+            If the TeamCity developers would change or remove any of the dependencies
+            of this project, they can be simply re-added by setting the
+            scope to "compile"!
+        -->
+        <!-- Apache HttpComponents HttpClient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Google GSON -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Test dependencies -->
         <!-- TestNG -->
         <dependency>
