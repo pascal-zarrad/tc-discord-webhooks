@@ -24,6 +24,8 @@
 
 package com.github.playerforcehd.tcdiscordwebhooks.notificator;
 
+import com.github.playerforcehd.tcdiscordwebhooks.discord.DiscordWebHookPayload;
+import com.github.playerforcehd.tcdiscordwebhooks.discord.DiscordWebHookProcessor;
 import jetbrains.buildServer.Build;
 import jetbrains.buildServer.notification.Notificator;
 import jetbrains.buildServer.notification.NotificatorRegistry;
@@ -33,11 +35,16 @@ import jetbrains.buildServer.serverSide.*;
 import jetbrains.buildServer.serverSide.mute.MuteInfo;
 import jetbrains.buildServer.serverSide.problems.BuildProblemInfo;
 import jetbrains.buildServer.tests.TestName;
+import jetbrains.buildServer.users.NotificatorPropertyKey;
+import jetbrains.buildServer.users.PropertyKey;
 import jetbrains.buildServer.users.SUser;
 import jetbrains.buildServer.vcs.VcsRoot;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -48,6 +55,12 @@ import java.util.Set;
  * @author Pascal Zarrad
  */
 public class DiscordNotificator implements Notificator {
+
+    /**
+     * The logger used for debug messages.
+     * Mostly used for error logging.
+     */
+    private static final Logger LOGGER = Logger.getLogger(DiscordNotificator.class);
 
     /**
      * The type of this {@link Notificator}
@@ -62,25 +75,20 @@ public class DiscordNotificator implements Notificator {
     /**
      * Name of the property that defines the URL of the WebHook
      */
-    private static final String WEBHOOK_URL = "WebHookURL";
+    private static final PropertyKey WEBHOOK_URL = new NotificatorPropertyKey(TYPE, "DiscordWebHook_WebHookURL");
 
     /**
      * Name of the property that defines the Username of the WebHook
      */
-    private static final String USERNAME = "Username";
+    private static final PropertyKey USERNAME = new NotificatorPropertyKey(TYPE, "DiscordWebHook_Username");
 
     /**
-     * Name of the property that defines if logging should be enabled or not
+     * The {@link DiscordWebHookProcessor} that is used to trigger the WebHooks
      */
-    private static final String ENABLE_LOGGING = "EnableLogging";
+    private final DiscordWebHookProcessor discordWebHookProcessor;
 
-    /**
-     * The {@link SBuildServer} that owns this notificator
-     */
-    private SBuildServer sBuildServer;
-
-    public DiscordNotificator(NotificatorRegistry notificatorRegistry, SBuildServer sBuildServer) {
-        this.sBuildServer = sBuildServer;
+    public DiscordNotificator(NotificatorRegistry notificatorRegistry) {
+        this.discordWebHookProcessor = new DiscordWebHookProcessor();
         this.initializeNotificator(notificatorRegistry);
     }
 
@@ -91,10 +99,36 @@ public class DiscordNotificator implements Notificator {
      */
     private void initializeNotificator(NotificatorRegistry notificatorRegistry) {
         ArrayList<UserPropertyInfo> userProperties = new ArrayList<>();
-        userProperties.add(new UserPropertyInfo(WEBHOOK_URL, "WebHook URL"));
-        userProperties.add(new UserPropertyInfo(USERNAME, "Username"));
-        userProperties.add(new UserPropertyInfo(ENABLE_LOGGING, "Enable logging (true|false)"));
+        userProperties.add(new UserPropertyInfo(WEBHOOK_URL.getKey(), "WebHook URL"));
+        userProperties.add(new UserPropertyInfo(USERNAME.getKey(), "Username"));
         notificatorRegistry.register(this, userProperties);
+    }
+
+    /**
+     * Send the notification by triggering the
+     * {@link DiscordWebHookProcessor#sendDiscordWebHook(String, DiscordWebHookPayload)}
+     * method using the data given in the discordWebHookPayload parameter.
+     *
+     * @param discordWebHookPayload The payload to send
+     * @param users                 The users that should be notified
+     */
+    private void processNotify(@NotNull DiscordWebHookPayload discordWebHookPayload, @NotNull Set<SUser> users) {
+        for (SUser user : users) {
+            String webHookUrl = user.getPropertyValue(WEBHOOK_URL);
+            String username = user.getPropertyValue(USERNAME);
+            if (webHookUrl == null || webHookUrl.equals("")) {
+                LOGGER.error("The Discord WebHook URL for user '" + user.getName() + "' has not been set. Can't execute the WebHook!");
+                return;
+            }
+            if (username != null && !username.equals("")) {
+                discordWebHookPayload.setUsername(username);
+            }
+            try {
+                this.discordWebHookProcessor.sendDiscordWebHook(webHookUrl, discordWebHookPayload);
+            } catch (IOException | URISyntaxException e) {
+                LOGGER.error("Failed to send the WebHook!", e);
+            }
+        }
     }
 
     @Override
