@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.playerforcehd.tcdiscordwebhooks;
+package com.github.playerforcehd.tcdiscordwebhooks.notificator;
 
 import jetbrains.buildServer.Build;
 import jetbrains.buildServer.notification.Notificator;
@@ -49,8 +49,6 @@ import java.util.Set;
  */
 public class DiscordNotificator implements Notificator {
 
-    // ---- Information about this Notificator
-
     /**
      * The type of this {@link Notificator}
      */
@@ -61,16 +59,41 @@ public class DiscordNotificator implements Notificator {
      */
     private static final String DISPLAY_NAME = "Discord WebHook";
 
-    // ---- UserProperties of this Notificator
-
     /**
      * Name of the property that defines the URL of the WebHook
      */
     private static final String WEBHOOK_URL = "WebHookURL";
 
-    public DiscordNotificator(NotificatorRegistry notificatorRegistry) {
+    /**
+     * Name of the property that defines the Username of the WebHook
+     */
+    private static final String USERNAME = "Username";
+
+    /**
+     * Name of the property that defines if logging should be enabled or not
+     */
+    private static final String ENABLE_LOGGING = "EnableLogging";
+
+    /**
+     * The {@link SBuildServer} that owns this notificator
+     */
+    private SBuildServer sBuildServer;
+
+    public DiscordNotificator(NotificatorRegistry notificatorRegistry, SBuildServer sBuildServer) {
+        this.sBuildServer = sBuildServer;
+        this.initializeNotificator(notificatorRegistry);
+    }
+
+    /**
+     * Creates all the {@link UserPropertyInfo}'s  and registers this {@link Notificator}
+     *
+     * @param notificatorRegistry The {@link NotificatorRegistry} where this {@link Notificator} will be registered to
+     */
+    private void initializeNotificator(NotificatorRegistry notificatorRegistry) {
         ArrayList<UserPropertyInfo> userProperties = new ArrayList<>();
         userProperties.add(new UserPropertyInfo(WEBHOOK_URL, "WebHook URL"));
+        userProperties.add(new UserPropertyInfo(USERNAME, "Username"));
+        userProperties.add(new UserPropertyInfo(ENABLE_LOGGING, "Enable logging (true|false)"));
         notificatorRegistry.register(this, userProperties);
     }
 

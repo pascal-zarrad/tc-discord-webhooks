@@ -9,10 +9,5 @@
         <module name="tc-discord-webhooks-server" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="build" target="1.8" />
-      <module name="tc-discord-webhooks" target="1.8" />
-      <module name="tc-discord-webhooks-server" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
