@@ -223,13 +223,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildSuccessful(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build succeeded!";
         String description = "The build with the ID " + sRunningBuild.getBuildId() + " has succeeded!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.GREEN,
                         null,
                         null,
@@ -244,13 +243,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildFailed(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build failed";
         String description = "The build with the ID " + sRunningBuild.getBuildId() + " has failed!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.RED,
                         null,
                         null,
@@ -265,13 +263,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildFailedToStart(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build failed to start";
         String description = "The build with the ID " + sRunningBuild.getBuildId() + " has failed to start!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.RED,
                         null,
                         null,
@@ -286,13 +283,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyLabelingFailed(@NotNull Build build, @NotNull VcsRoot vcsRoot, @NotNull Throwable throwable, @NotNull Set<SUser> users) {
         String title = "Labeling failed";
         String description = "Labeling of build with the ID " + build.getBuildId() + " has failed!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.RED,
                         null,
                         null,
@@ -307,13 +303,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildFailing(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build is failing";
         String description = "The build with the ID " + sRunningBuild.getBuildId() + " is failing!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.RED,
                         null,
                         null,
@@ -328,13 +323,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildProbablyHanging(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build is probably hanging";
         String description = "The build with the ID " + sRunningBuild.getBuildId() + " is probably hanging!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.ORANGE,
                         null,
                         null,
@@ -349,13 +343,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyResponsibleChanged(@NotNull SBuildType sBuildType, @NotNull Set<SUser> users) {
         String title = "Responsibility for build type has changed";
         String description = "The responsibility for the build type " + sBuildType.getExtendedFullName() + " has changed!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.ORANGE,
                         null,
                         null,
@@ -370,13 +363,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyResponsibleAssigned(@NotNull SBuildType sBuildType, @NotNull Set<SUser> users) {
         String title = "Responsibility assigned";
         String description = "Responsibility for build type " + sBuildType.getExtendedFullName() + " has been assigned!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.ORANGE,
                         null,
                         null,
@@ -391,13 +383,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyResponsibleChanged(@Nullable TestNameResponsibilityEntry testNameResponsibilityEntry, @NotNull TestNameResponsibilityEntry testNameResponsibilityEntry1, @NotNull SProject sProject, @NotNull Set<SUser> users) {
         String title = "Responsibility changed";
         String description = "Responsibility for the project " + sProject.getFullName() + " has changed!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.ORANGE,
                         null,
                         null,
@@ -412,13 +403,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyResponsibleAssigned(@Nullable TestNameResponsibilityEntry testNameResponsibilityEntry, @NotNull TestNameResponsibilityEntry testNameResponsibilityEntry1, @NotNull SProject sProject, @NotNull Set<SUser> users) {
         String title = "Responsibility assigned";
         String description = "Responsibility for project " + sProject.getFullName() + " has been assigned!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.ORANGE,
                         null,
                         null,
@@ -433,13 +423,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyResponsibleChanged(@NotNull Collection<TestName> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> users) {
         String title = "Responsibility changed";
         String description = "Responsibility for project " + sProject.getFullName() + " has been changed!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.ORANGE,
                         null,
                         null,
@@ -454,13 +443,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyResponsibleAssigned(@NotNull Collection<TestName> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> users) {
         String title = "Responsibility assigned";
         String description = "Responsibility for one or more tests of project " + sProject.getFullName() + " have been assigned!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.ORANGE,
                         null,
                         null,
@@ -475,13 +463,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildProblemResponsibleAssigned(@NotNull Collection<BuildProblemInfo> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> users) {
         String title = "Responsibility assigned";
         String description = "Responsibility for one or more build problems of project " + sProject.getFullName() + " have been assigned!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.ORANGE,
                         null,
                         null,
@@ -496,13 +483,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildProblemResponsibleChanged(@NotNull Collection<BuildProblemInfo> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> users) {
         String title = "Responsibility assigned";
         String description = "Responsibility for one or more tests of project " + sProject.getFullName() + " has been changed!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.ORANGE,
                         null,
                         null,
@@ -519,13 +505,12 @@ public class DiscordNotificator implements Notificator {
         if (muteInfo.getProject() != null) {
             muteInfo.getProject().getFullName();
             String description = "One or more tests of the project " + muteInfo.getProject().getFullName() + " have been muted!";
-            String url = this.sBuildServer.getRootUrl();
             DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
             discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                     new DiscordEmbed(
                             title,
                             description,
-                            url,
+                            "",
                             DiscordEmbedColor.ORANGE,
                             null,
                             null,
@@ -543,13 +528,12 @@ public class DiscordNotificator implements Notificator {
         if (muteInfo.getProject() != null) {
             muteInfo.getProject().getFullName();
             String description = "One or more tests of the project " + muteInfo.getProject().getFullName() + " have been unmuted!";
-            String url = this.sBuildServer.getRootUrl();
             DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
             discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                     new DiscordEmbed(
                             title,
                             description,
-                            url,
+                            "",
                             DiscordEmbedColor.ORANGE,
                             null,
                             null,
@@ -567,13 +551,12 @@ public class DiscordNotificator implements Notificator {
         if (muteInfo.getProject() != null) {
             muteInfo.getProject().getFullName();
             String description = "One or more build problems of the project " + muteInfo.getProject().getFullName() + " have been muted!";
-            String url = this.sBuildServer.getRootUrl();
             DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
             discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                     new DiscordEmbed(
                             title,
                             description,
-                            url,
+                            "",
                             DiscordEmbedColor.ORANGE,
                             null,
                             null,
@@ -591,13 +574,12 @@ public class DiscordNotificator implements Notificator {
         if (muteInfo.getProject() != null) {
             muteInfo.getProject().getFullName();
             String description = "One or more build problems of the project " + muteInfo.getProject().getFullName() + " have been unmuted!";
-            String url = this.sBuildServer.getRootUrl();
             DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
             discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                     new DiscordEmbed(
                             title,
                             description,
-                            url,
+                            "",
                             DiscordEmbedColor.ORANGE,
                             null,
                             null,
