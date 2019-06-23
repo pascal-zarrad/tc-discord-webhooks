@@ -191,7 +191,6 @@ public class DiscordNotificator implements Notificator {
             branchName = branch.getDisplayName();
         }
         discordEmbedFields.add(new DiscordEmbedField("Branch", branchName, true));
-        discordEmbedFields.add(new DiscordEmbedField("Triggered by", sRunningBuild.getTriggeredBy().getAsString(), true));
         Comment comment = sRunningBuild.getBuildComment();
         if(comment != null) {
             discordEmbedFields.add(new DiscordEmbedField("Comment", comment.getComment(), false));
@@ -203,7 +202,7 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildStarted(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build started";
         String description = "A build with the ID " + sRunningBuild.getBuildId() + " has been started!";
-        String url = "";
+        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -224,7 +223,7 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildSuccessful(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build succeeded!";
         String description = "The build with the ID " + sRunningBuild.getBuildId() + " has succeeded!";
-        String url = this.sBuildServer.getRootUrl() + sRunningBuild.getCurrentPath();
+        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -245,7 +244,7 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildFailed(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build failed";
         String description = "The build with the ID " + sRunningBuild.getBuildId() + " has failed!";
-        String url = "";
+        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -266,7 +265,7 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildFailedToStart(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build failed to start";
         String description = "The build with the ID " + sRunningBuild.getBuildId() + " has failed to start!";
-        String url = "";
+        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -284,78 +283,330 @@ public class DiscordNotificator implements Notificator {
     }
 
     @Override
-    public void notifyLabelingFailed(@NotNull Build build, @NotNull VcsRoot vcsRoot, @NotNull Throwable throwable, @NotNull Set<SUser> set) {
-
+    public void notifyLabelingFailed(@NotNull Build build, @NotNull VcsRoot vcsRoot, @NotNull Throwable throwable, @NotNull Set<SUser> users) {
+        String title = "Labeling failed";
+        String description = "Labeling of build with the ID " + build.getBuildId() + " has failed!";
+        String url = this.sBuildServer.getRootUrl();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        new DiscordEmbedField[]{}
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyBuildFailing(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> set) {
-
+    public void notifyBuildFailing(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
+        String title = "Build is failing";
+        String description = "The build with the ID " + sRunningBuild.getBuildId() + " is failing!";
+        String url = this.sBuildServer.getRootUrl();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        buildFieldsForRunningBuild(sRunningBuild)
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyBuildProbablyHanging(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> set) {
-
+    public void notifyBuildProbablyHanging(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
+        String title = "Build is probably hanging";
+        String description = "The build with the ID " + sRunningBuild.getBuildId() + " is probably hanging!";
+        String url = this.sBuildServer.getRootUrl();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        buildFieldsForRunningBuild(sRunningBuild)
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyResponsibleChanged(@NotNull SBuildType sBuildType, @NotNull Set<SUser> set) {
-
+    public void notifyResponsibleChanged(@NotNull SBuildType sBuildType, @NotNull Set<SUser> users) {
+        String title = "Responsibility for build type has changed";
+        String description = "The responsibility for the build type " + sBuildType.getExtendedFullName() + " has changed!";
+        String url = this.sBuildServer.getRootUrl();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        new DiscordEmbedField[]{}
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyResponsibleAssigned(@NotNull SBuildType sBuildType, @NotNull Set<SUser> set) {
-
+    public void notifyResponsibleAssigned(@NotNull SBuildType sBuildType, @NotNull Set<SUser> users) {
+        String title = "Responsibility assigned";
+        String description = "Responsibility for build type " + sBuildType.getExtendedFullName() + " has been assigned!";
+        String url = this.sBuildServer.getRootUrl();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        new DiscordEmbedField[]{}
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyResponsibleChanged(@Nullable TestNameResponsibilityEntry testNameResponsibilityEntry, @NotNull TestNameResponsibilityEntry testNameResponsibilityEntry1, @NotNull SProject sProject, @NotNull Set<SUser> set) {
-
+    public void notifyResponsibleChanged(@Nullable TestNameResponsibilityEntry testNameResponsibilityEntry, @NotNull TestNameResponsibilityEntry testNameResponsibilityEntry1, @NotNull SProject sProject, @NotNull Set<SUser> users) {
+        String title = "Responsibility changed";
+        String description = "Responsibility for the project " + sProject.getFullName() + " has changed!";
+        String url = this.sBuildServer.getRootUrl();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        new DiscordEmbedField[]{}
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyResponsibleAssigned(@Nullable TestNameResponsibilityEntry testNameResponsibilityEntry, @NotNull TestNameResponsibilityEntry testNameResponsibilityEntry1, @NotNull SProject sProject, @NotNull Set<SUser> set) {
-
+    public void notifyResponsibleAssigned(@Nullable TestNameResponsibilityEntry testNameResponsibilityEntry, @NotNull TestNameResponsibilityEntry testNameResponsibilityEntry1, @NotNull SProject sProject, @NotNull Set<SUser> users) {
+        String title = "Responsibility assigned";
+        String description = "Responsibility for project " + sProject.getFullName() + " has been assigned!";
+        String url = this.sBuildServer.getRootUrl();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        new DiscordEmbedField[]{}
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyResponsibleChanged(@NotNull Collection<TestName> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> set) {
-
+    public void notifyResponsibleChanged(@NotNull Collection<TestName> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> users) {
+        String title = "Responsibility changed";
+        String description = "Responsibility for project " + sProject.getFullName() + " has been changed!";
+        String url = this.sBuildServer.getRootUrl();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        new DiscordEmbedField[]{}
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyResponsibleAssigned(@NotNull Collection<TestName> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> set) {
-
+    public void notifyResponsibleAssigned(@NotNull Collection<TestName> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> users) {
+        String title = "Responsibility assigned";
+        String description = "Responsibility for one or more tests of project " + sProject.getFullName() + " have been assigned!";
+        String url = this.sBuildServer.getRootUrl();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        new DiscordEmbedField[]{}
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyBuildProblemResponsibleAssigned(@NotNull Collection<BuildProblemInfo> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> set) {
-
+    public void notifyBuildProblemResponsibleAssigned(@NotNull Collection<BuildProblemInfo> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> users) {
+        String title = "Responsibility assigned";
+        String description = "Responsibility for one or more build problems of project " + sProject.getFullName() + " have been assigned!";
+        String url = this.sBuildServer.getRootUrl();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        new DiscordEmbedField[]{}
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyBuildProblemResponsibleChanged(@NotNull Collection<BuildProblemInfo> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> set) {
-
+    public void notifyBuildProblemResponsibleChanged(@NotNull Collection<BuildProblemInfo> collection, @NotNull ResponsibilityEntry responsibilityEntry, @NotNull SProject sProject, @NotNull Set<SUser> users) {
+        String title = "Responsibility assigned";
+        String description = "Responsibility for one or more tests of project " + sProject.getFullName() + " has been changed!";
+        String url = this.sBuildServer.getRootUrl();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        new DiscordEmbedField[]{}
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyTestsMuted(@NotNull Collection<STest> collection, @NotNull MuteInfo muteInfo, @NotNull Set<SUser> set) {
-
+    public void notifyTestsMuted(@NotNull Collection<STest> collection, @NotNull MuteInfo muteInfo, @NotNull Set<SUser> users) {
+        String title = "Tests muted";
+        if (muteInfo.getProject() != null) {
+            muteInfo.getProject().getFullName();
+            String description = "One or more tests of the project " + muteInfo.getProject().getFullName() + " have been muted!";
+            String url = this.sBuildServer.getRootUrl();
+            DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+            discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                    new DiscordEmbed(
+                            title,
+                            description,
+                            url,
+                            DiscordEmbedColor.BLUE,
+                            null,
+                            null,
+                            null,
+                            new DiscordEmbedField[]{}
+                    )
+            });
+            this.processNotify(discordWebHookPayload, users);
+        }
     }
 
     @Override
-    public void notifyTestsUnmuted(@NotNull Collection<STest> collection, @NotNull MuteInfo muteInfo, @Nullable SUser sUser, @NotNull Set<SUser> set) {
-
+    public void notifyTestsUnmuted(@NotNull Collection<STest> collection, @NotNull MuteInfo muteInfo, @Nullable SUser sUser, @NotNull Set<SUser> users) {
+        String title = "Tests unmuted";
+        if (muteInfo.getProject() != null) {
+            muteInfo.getProject().getFullName();
+            String description = "One or more tests of the project " + muteInfo.getProject().getFullName() + " have been unmuted!";
+            String url = this.sBuildServer.getRootUrl();
+            DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+            discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                    new DiscordEmbed(
+                            title,
+                            description,
+                            url,
+                            DiscordEmbedColor.BLUE,
+                            null,
+                            null,
+                            null,
+                            new DiscordEmbedField[]{}
+                    )
+            });
+            this.processNotify(discordWebHookPayload, users);
+        }
     }
 
     @Override
-    public void notifyBuildProblemsMuted(@NotNull Collection<BuildProblemInfo> collection, @NotNull MuteInfo muteInfo, @NotNull Set<SUser> set) {
-
+    public void notifyBuildProblemsMuted(@NotNull Collection<BuildProblemInfo> collection, @NotNull MuteInfo muteInfo, @NotNull Set<SUser> users) {
+        String title = "Build problems muted";
+        if (muteInfo.getProject() != null) {
+            muteInfo.getProject().getFullName();
+            String description = "One or more build problems of the project " + muteInfo.getProject().getFullName() + " have been muted!";
+            String url = this.sBuildServer.getRootUrl();
+            DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+            discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                    new DiscordEmbed(
+                            title,
+                            description,
+                            url,
+                            DiscordEmbedColor.BLUE,
+                            null,
+                            null,
+                            null,
+                            new DiscordEmbedField[]{}
+                    )
+            });
+            this.processNotify(discordWebHookPayload, users);
+        }
     }
 
     @Override
-    public void notifyBuildProblemsUnmuted(@NotNull Collection<BuildProblemInfo> collection, @NotNull MuteInfo muteInfo, @Nullable SUser sUser, @NotNull Set<SUser> set) {
-
+    public void notifyBuildProblemsUnmuted(@NotNull Collection<BuildProblemInfo> collection, @NotNull MuteInfo muteInfo, @Nullable SUser sUser, @NotNull Set<SUser> users) {
+        String title = "Build problems unmuted";
+        if (muteInfo.getProject() != null) {
+            muteInfo.getProject().getFullName();
+            String description = "One or more build problems of the project " + muteInfo.getProject().getFullName() + " have been unmuted!";
+            String url = this.sBuildServer.getRootUrl();
+            DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+            discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                    new DiscordEmbed(
+                            title,
+                            description,
+                            url,
+                            DiscordEmbedColor.BLUE,
+                            null,
+                            null,
+                            null,
+                            new DiscordEmbedField[]{}
+                    )
+            });
+            this.processNotify(discordWebHookPayload, users);
+        }
     }
 
     @NotNull
