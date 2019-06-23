@@ -202,13 +202,12 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildStarted(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build started";
         String description = "A build with the ID " + sRunningBuild.getBuildId() + " has been started!";
-        String url = this.sBuildServer.getRootUrl();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
                         description,
-                        url,
+                        "",
                         DiscordEmbedColor.BLUE,
                         null,
                         null,
