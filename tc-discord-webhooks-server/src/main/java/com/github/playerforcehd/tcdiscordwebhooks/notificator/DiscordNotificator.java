@@ -26,12 +26,16 @@ package com.github.playerforcehd.tcdiscordwebhooks.notificator;
 
 import com.github.playerforcehd.tcdiscordwebhooks.discord.DiscordWebHookPayload;
 import com.github.playerforcehd.tcdiscordwebhooks.discord.DiscordWebHookProcessor;
+import com.github.playerforcehd.tcdiscordwebhooks.discord.embeds.DiscordEmbed;
+import com.github.playerforcehd.tcdiscordwebhooks.discord.embeds.DiscordEmbedColor;
+import com.github.playerforcehd.tcdiscordwebhooks.discord.embeds.DiscordEmbedField;
 import jetbrains.buildServer.Build;
 import jetbrains.buildServer.notification.Notificator;
 import jetbrains.buildServer.notification.NotificatorRegistry;
 import jetbrains.buildServer.responsibility.ResponsibilityEntry;
 import jetbrains.buildServer.responsibility.TestNameResponsibilityEntry;
 import jetbrains.buildServer.serverSide.*;
+import jetbrains.buildServer.serverSide.comments.Comment;
 import jetbrains.buildServer.serverSide.mute.MuteInfo;
 import jetbrains.buildServer.serverSide.problems.BuildProblemInfo;
 import jetbrains.buildServer.tests.TestName;
@@ -47,6 +51,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -61,34 +66,47 @@ public class DiscordNotificator implements Notificator {
      * Mostly used for error logging.
      */
     private static final Logger LOGGER = Logger.getLogger(DiscordNotificator.class);
-
     /**
      * The type of this {@link Notificator}
      */
-    private static final String TYPE = "DiscordWebHookNotificator";
-
+    private static final String TYPE = "DiscordNotificator";
     /**
      * The display name of this notificator
      */
     private static final String DISPLAY_NAME = "Discord WebHook";
-
     /**
-     * Name of the property that defines the URL of the WebHook
+     * The name of the {@link PropertyKey} {@link #WEBHOOK_URL}
      */
-    private static final PropertyKey WEBHOOK_URL = new NotificatorPropertyKey(TYPE, "DiscordWebHook_WebHookURL");
-
+    private static final String WEBHOOK_URL_KEY = "DiscordWebHookURL";
     /**
-     * Name of the property that defines the Username of the WebHook
+     * The name of the {@link PropertyKey} {@link #USERNAME}
      */
-    private static final PropertyKey USERNAME = new NotificatorPropertyKey(TYPE, "DiscordWebHook_Username");
-
+    private static final String WEBHOOK_USERNAME_KEY = "DiscordUsername";
+    /**
+     * {@link PropertyKey} of the property that defines the URL of the WebHook
+     */
+    private static final PropertyKey WEBHOOK_URL = new NotificatorPropertyKey(TYPE, WEBHOOK_URL_KEY);
+    /**
+     * {@link PropertyKey} of the property that defines the Username of the WebHook
+     */
+    private static final PropertyKey USERNAME = new NotificatorPropertyKey(TYPE, WEBHOOK_USERNAME_KEY);
+    /**
+     * The string used for situation where no data is available to display
+     */
+    private static final String NO_DATA = "<No data available>";
     /**
      * The {@link DiscordWebHookProcessor} that is used to trigger the WebHooks
      */
     private final DiscordWebHookProcessor discordWebHookProcessor;
 
-    public DiscordNotificator(NotificatorRegistry notificatorRegistry) {
+    /**
+     * The {@link SBuildServer} this {@link Notificator} belongs to
+     */
+    private SBuildServer sBuildServer;
+
+    public DiscordNotificator(NotificatorRegistry notificatorRegistry, SBuildServer sBuildServer) {
         this.discordWebHookProcessor = new DiscordWebHookProcessor();
+        this.sBuildServer = sBuildServer;
         this.initializeNotificator(notificatorRegistry);
     }
 
@@ -99,8 +117,8 @@ public class DiscordNotificator implements Notificator {
      */
     private void initializeNotificator(NotificatorRegistry notificatorRegistry) {
         ArrayList<UserPropertyInfo> userProperties = new ArrayList<>();
-        userProperties.add(new UserPropertyInfo(WEBHOOK_URL.getKey(), "WebHook URL"));
-        userProperties.add(new UserPropertyInfo(USERNAME.getKey(), "Username"));
+        userProperties.add(new UserPropertyInfo(WEBHOOK_URL_KEY, "WebHook URL"));
+        userProperties.add(new UserPropertyInfo(WEBHOOK_USERNAME_KEY, "Username"));
         notificatorRegistry.register(this, userProperties);
     }
 
@@ -131,24 +149,138 @@ public class DiscordNotificator implements Notificator {
         }
     }
 
-    @Override
-    public void notifyBuildStarted(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> set) {
+    /**
+     * Gets a Project from a {@link SRunningBuild} by searching for a project
+     * that has the same project id as the running build.
+     *
+     * @param sRunningBuild The {@link SRunningBuild} from which the Project should be grabbed
+     * @return The project that owns the build or null
+     */
+    private SProject getProjectFromRunningBuild(SRunningBuild sRunningBuild) {
+        for (SProject project : this.sBuildServer.getProjectManager().getProjects()) {
+            if (project.getProjectId().equals(sRunningBuild.getProjectId())) {
+                return project;
+            }
+        }
+        return null;
+    }
 
+    /**
+     * Builds the {@link DiscordEmbedField}'s that are used in all notifications
+     * that are based on an {@link SRunningBuild}.
+     *
+     * @param sRunningBuild The build from which the fields will be build
+     * @return The {@link DiscordEmbedField}'s created from the {@link SRunningBuild}
+     */
+    private DiscordEmbedField[] buildFieldsForRunningBuild(SRunningBuild sRunningBuild) {
+        List<DiscordEmbedField> discordEmbedFields = new ArrayList<>();
+        // Grab data
+        // Project
+        SProject project = getProjectFromRunningBuild(sRunningBuild);
+        String projectName = NO_DATA;
+        if (project != null) {
+            projectName = project.getName();
+        }
+        discordEmbedFields.add(new DiscordEmbedField("Project: ", projectName, true));
+        // Build name
+        discordEmbedFields.add(new DiscordEmbedField("Build:", sRunningBuild.getBuildTypeName(), true));
+        // Branch
+        Branch branch = sRunningBuild.getBranch();
+        String branchName = "Default";
+        if (branch != null && branch.getName().equals(Branch.DEFAULT_BRANCH_NAME)) {
+            branchName = branch.getDisplayName();
+        }
+        discordEmbedFields.add(new DiscordEmbedField("Branch", branchName, true));
+        discordEmbedFields.add(new DiscordEmbedField("Triggered by", sRunningBuild.getTriggeredBy().getAsString(), true));
+        Comment comment = sRunningBuild.getBuildComment();
+        if(comment != null) {
+            discordEmbedFields.add(new DiscordEmbedField("Comment", comment.getComment(), false));
+        }
+        return discordEmbedFields.toArray(new DiscordEmbedField[0]);
     }
 
     @Override
-    public void notifyBuildSuccessful(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> set) {
-
+    public void notifyBuildStarted(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
+        String title = "Build started";
+        String description = "A build with the ID " + sRunningBuild.getBuildId() + " has been started!";
+        String url = "";
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        buildFieldsForRunningBuild(sRunningBuild)
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyBuildFailed(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> set) {
-
+    public void notifyBuildSuccessful(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
+        String title = "Build succeeded!";
+        String description = "The build with the ID " + sRunningBuild.getBuildId() + " has succeeded!";
+        String url = this.sBuildServer.getRootUrl() + sRunningBuild.getCurrentPath();
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.GREEN,
+                        null,
+                        null,
+                        null,
+                        buildFieldsForRunningBuild(sRunningBuild)
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
-    public void notifyBuildFailedToStart(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> set) {
+    public void notifyBuildFailed(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
+        String title = "Build failed";
+        String description = "The build with the ID " + sRunningBuild.getBuildId() + " has failed!";
+        String url = "";
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.RED,
+                        null,
+                        null,
+                        null,
+                        buildFieldsForRunningBuild(sRunningBuild)
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
+    }
 
+    @Override
+    public void notifyBuildFailedToStart(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
+        String title = "Build failed to start";
+        String description = "The build with the ID " + sRunningBuild.getBuildId() + " has failed to start!";
+        String url = "";
+        DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
+        discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
+                new DiscordEmbed(
+                        title,
+                        description,
+                        url,
+                        DiscordEmbedColor.BLUE,
+                        null,
+                        null,
+                        null,
+                        buildFieldsForRunningBuild(sRunningBuild)
+                )
+        });
+        this.processNotify(discordWebHookPayload, users);
     }
 
     @Override
