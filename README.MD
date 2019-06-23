@@ -15,6 +15,14 @@ Simply put the plugins ZIP file into the plugins directory of your TeamCity serv
  
 You should also be able to upload the plugin using the settings page of your TeamCity installation.
 
+### Usage
+
+The usage of this plugin is simple. 
+Just create a WebHook for one of your Discord channels as shown here: [Discord WebHook HowTo](https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks).
+
+Then enter the WebHook URL and a Username (recommended to also enter the name!) under "My Settings & Tools" -> "Notification Rules" -> "Discord WebHook".
+Configure your rules as normal. You should now receive notifications on Discord!
+
 ## Development
 
 ### Building
