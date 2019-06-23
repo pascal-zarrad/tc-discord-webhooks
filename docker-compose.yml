@@ -2,24 +2,20 @@ version: '2'
 
 services:
   teamcity:
-    restart: on-failure
+    restart: always
     image: jetbrains/teamcity-server:latest
     volumes:
       - ./target/tc-discord-webhooks.zip:/data/teamcity_server/datadir/plugins/tc-discord-webhooks.zip
-      - /srv/teamcity/data:/data/teamcity_server/datadir
-      - /srv/teamcity/logs:/opt/teamcity/logs
     ports:
       - "8080:8111"
 
   teamcity_agent:
-    restart: on-failure
-    image: lunarfrog/teamcity-agent-dotnet:latest
+    restart: always
+    image: jetbrains/teamcity-agent:latest
     depends_on:
       - teamcity
     links:
       - teamcity:teamcity
-    volumes:
-      - /srv/teamcity/agents/001/conf:/data/teamcity_agent/conf
     environment:
       - SERVER_URL=teamcity:8111
       - AGENT_NAME="tcagent_docker"
