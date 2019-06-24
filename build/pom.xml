@@ -35,7 +35,7 @@
     <packaging>pom</packaging>
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <teamcity.tc-discord-webhooks.plugin.version>${parent.version}
+        <teamcity.tc-discord-webhooks.plugin.version>${project.parent.version}
         </teamcity.tc-discord-webhooks.plugin.version>
         <teamcity.tc-discord-webhooks.plugin.vendorName>Pascal Zarrad
         </teamcity.tc-discord-webhooks.plugin.vendorName>
