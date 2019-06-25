@@ -44,7 +44,6 @@ You need:
  - Docker compose
  
 The development setup is composed using the following software:
- - PostgreSQL
  - TeamCity
  - TeamCity Agent
  
