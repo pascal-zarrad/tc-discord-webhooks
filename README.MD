@@ -41,14 +41,14 @@ everything that is required to get started.
 You need:
  - A Docker compatible system
  - Docker
- - Docker compose
+ - Docker-Compose
  
 The development setup is composed using the following software:
  - TeamCity
  - TeamCity Agent
  
 To setup the containers and start them take a look at the commands below.
-After the container have been started you can open TeamCity in your browser.
+After the containers have been started you can open TeamCity in your browser.
 
 Setup:
 ```docker-compose build```
