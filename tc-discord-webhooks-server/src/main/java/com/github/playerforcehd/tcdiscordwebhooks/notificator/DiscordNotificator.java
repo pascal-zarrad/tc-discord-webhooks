@@ -191,6 +191,10 @@ public class DiscordNotificator implements Notificator {
             branchName = branch.getDisplayName();
         }
         discordEmbedFields.add(new DiscordEmbedField("Branch", branchName, true));
+        // Hyperlinks
+        String buildOverviewUrl = "http://kaleidox.de:8111/viewLog.html?buildId="+sRunningBuild.getBuildId()+"&buildTypeId="+sRunningBuild.getBuildTypeId()+"&tab=buildLog";
+        String buildLogUrl = "http://kaleidox.de:8111/viewLog.html?buildId="+sRunningBuild.getBuildId()+"&buildTypeId="+sRunningBuild.getBuildTypeId()+"&tab=buildResultsDiv";
+        discordEmbedFields.add(new DiscordEmbedField("Links", "[Overview]("+buildOverviewUrl+") | [Log]("+buildLogUrl+")", true));
         Comment comment = sRunningBuild.getBuildComment();
         if(comment != null) {
             discordEmbedFields.add(new DiscordEmbedField("Comment", comment.getComment(), false));
@@ -202,6 +206,7 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildStarted(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build started";
         String description = "A build with the ID " + sRunningBuild.getBuildId() + " has been started!";
+        
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
