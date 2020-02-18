@@ -37,7 +37,7 @@
         <vendor>
             <name>@VendorName@</name>
             <url>@VendorURL@</url>
-            <logo>https://static.playerforcehd.tk/images/steamgroup/pb/Blue/EuckalyptusDreizack_Blue-512.png</logo>
+            <logo>https://raw.githubusercontent.com/pascal-zarrad/tc-discord-webhooks/master/.github/logo_tmp.png</logo>
         </vendor>
     </info>
     <deployment use-separate-classloader="true"/>

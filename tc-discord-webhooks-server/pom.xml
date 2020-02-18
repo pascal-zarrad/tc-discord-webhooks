@@ -29,7 +29,7 @@
     <parent>
         <artifactId>tc-discord-webhooks</artifactId>
         <groupId>com.github.playerforcehd</groupId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
     <artifactId>tc-discord-webhooks-server</artifactId>
     <packaging>jar</packaging>
