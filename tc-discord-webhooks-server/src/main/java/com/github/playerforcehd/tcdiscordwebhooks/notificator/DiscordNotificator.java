@@ -187,7 +187,7 @@ public class DiscordNotificator implements Notificator {
         // Branch
         Branch branch = sRunningBuild.getBranch();
         String branchName = "Default";
-        if (branch != null && branch.getName().equals(Branch.DEFAULT_BRANCH_NAME)) {
+        if (branch != null && !branch.getName().equals(Branch.DEFAULT_BRANCH_NAME)) {
             branchName = branch.getDisplayName();
         }
         discordEmbedFields.add(new DiscordEmbedField("Branch", branchName, true));
