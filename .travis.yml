@@ -1,5 +1,0 @@
-language: java
-install: "mvn clean package"
-sudo: false
-jdk:
-  - openjdk12
