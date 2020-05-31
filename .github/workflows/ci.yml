@@ -13,3 +13,18 @@ jobs:
           java-version: 1.12
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: tc-discord-webhooks.zip
+          path: target/tc-discord-webhooks.zip
+      - name: Upload jacoco coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: tc-discord-webhooks-server/target/site
+      - name: Upload surefire report
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: tc-discord-webhooks-server/target/surefire-reports
