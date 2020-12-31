@@ -29,11 +29,11 @@
         <name>tc-discord-webhooks</name>
         <display-name>TC Discord WebHooks</display-name>
         <version>@Version@</version>
-        <description>A TeamCity plugin which allows the easy creation of Discord WebHooks to notify users on a Discord
-            server about the current build status of projects.
+        <description>A TeamCity plugin that allows the easy creation of Discord WebHooks that are used to notify users
+            on a Discord server about the current state of builds.
         </description>
-        <download-url>https://github.com/pascal-zarrad/tc-discord-webhooks/releases</download-url>
-        <email>p.zarrad@outlook.de</email>
+        <download-url>https://plugins.jetbrains.com/plugin/12608-tc-discord-webhooks</download-url>
+        <email>contact@pascal-zarrad.de</email>
         <vendor>
             <name>@VendorName@</name>
             <url>@VendorURL@</url>
