@@ -1,0 +1,25 @@
+# Checks for Git branches and commit messages to keep consistency on the repo
+name: Git
+
+on: ['pull_request']
+
+jobs:
+    # Verify that the branch name matches the format expected for contributions
+    verify_branch_name:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check branch name
+              uses: deepakputhraya/action-branch-name@master
+              with:
+                  regex: '([a-z])+\/([a-z])+'
+                  allowed_prefixes: 'feature,bug,release'
+                  ignore: master,develop
+    verify_commit_messages:
+        runs-on: ubuntu-18.04
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+            - uses: wagoid/commitlint-github-action@v2
+              with:
+                  configFile: commitlint.config.js
