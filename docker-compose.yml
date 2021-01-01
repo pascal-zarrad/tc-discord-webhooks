@@ -4,7 +4,7 @@ services:
   teamcity:
     image: jetbrains/teamcity-server:latest
     volumes:
-      - ./target/tc-discord-webhooks.zip:/data/teamcity_server/datadir/plugins/tc-discord-webhooks.zip
+      - ./target/:/data/teamcity_server/datadir/plugins/
     ports:
       - "8080:8111"
 
