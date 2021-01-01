@@ -2,7 +2,6 @@ version: '2'
 
 services:
   teamcity:
-    restart: always
     image: jetbrains/teamcity-server:latest
     volumes:
       - ./target/tc-discord-webhooks.zip:/data/teamcity_server/datadir/plugins/tc-discord-webhooks.zip
@@ -10,7 +9,6 @@ services:
       - "8080:8111"
 
   teamcity_agent:
-    restart: always
     image: jetbrains/teamcity-agent:latest
     depends_on:
       - teamcity
