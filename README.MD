@@ -1,4 +1,4 @@
-# TeamCity Discord WebHooks [![Build Status](https://travis-ci.org/pascal-zarrad/tc-discord-webhooks.svg?branch=master)](https://travis-ci.org/pascal-zarrad/tc-discord-webhooks)
+# TC Discord WebHooks [![Build Status](https://travis-ci.org/pascal-zarrad/tc-discord-webhooks.svg?branch=master)](https://travis-ci.org/pascal-zarrad/tc-discord-webhooks)
 
 A TeamCity plugin which allows the easy creation of Discord WebHooks to notify users on a Discord server about the current build status of projects.
 
