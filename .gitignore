@@ -10,6 +10,7 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+m2/
 
 # Exclude maven wrapper
 !/.mvn/wrapper/maven-wrapper.jar
@@ -22,6 +23,7 @@ buildNumber.properties
 
 ## File-based project format:
 *.iws
+*.iml
 
 ## Plugin-specific files:
 
