@@ -29,7 +29,7 @@
         <vendor>
             <name>@VendorName@</name>
             <url>@VendorURL@</url>
-            <logo>https://raw.githubusercontent.com/pascal-zarrad/tc-discord-webhooks/master/.github/logo_tmp.png</logo>
+            <logo>https://static.pascal-zarrad.de/projects/tc-discord-webhooks/tcdiscordwebhooks-logo-1024.png</logo>
         </vendor>
     </info>
     <deployment use-separate-classloader="true"/>
