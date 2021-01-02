@@ -1,5 +1,6 @@
 # TC Discord WebHooks [![Build Status](https://travis-ci.org/pascal-zarrad/tc-discord-webhooks.svg?branch=master)](https://travis-ci.org/pascal-zarrad/tc-discord-webhooks)
 
+## About
 A TeamCity plugin which allows the easy creation of Discord WebHooks to notify users on a Discord server about the current build status of projects.
 
 **Features:**
@@ -7,57 +8,107 @@ A TeamCity plugin which allows the easy creation of Discord WebHooks to notify u
  - Simple setup
  - Beautiful messages out of the box
 
-### System Requirements
+## System Requirements
 To use this plugin you need at least TeamCity 2018.2 and Java 8.
+In addition, a Discord server is necessary as you can't have webhooks without a server.
 
-### Installation
-Simply put the plugins ZIP file into the plugins directory of your TeamCity server and restart it.
- 
+## Installation
+Simply put the plugins ZIP file into the plugin's directory of your TeamCity server and restart it.
 You should also be able to upload the plugin using the settings page of your TeamCity installation.
+For further information refer to the official JetBrains documentation: [Installing additional plugins](https://www.jetbrains.com/help/teamcity/installing-additional-plugins.html)
 
-### Usage
-
-The usage of this plugin is simple. 
-Just create a WebHook for one of your Discord channels as shown here: [Discord WebHook HowTo](https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks).
+## Usage
+The usage of this plugin is simple.
+Just create a webhook for one of your Discord channels as shown here: [Discord WebHook HowTo](https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks).
 
 Then enter the WebHook URL and a Username (recommended to also enter the name!) under "My Settings & Tools" -> "Notification Rules" -> "Discord WebHook".
 Configure your rules as normal. You should now receive notifications on Discord!
 
-## Development
+## Development on Linux
 
-### Building
-The plugin is written in Java and uses Maven. So, you need the JDK and Maven to build the project.
+### Prerequisites
+To develop and build TC Discord Webhooks on Linux you need the following tools:
+ - Docker
+ - docker-compose
+ - make
 
-The project can be build using the following command: ```mvn clean package```
+Note that you might also just use the `mvn` command of your local Maven 2 installation to build the project.
+But using the Makefile ensures that you have your environment configured properly.
 
-The installation of the build artifact is similar as described under [Installation](#Installation)
-
-### Setting up a TeamCity Server for development
-To simplify the development on the plugin, this project is bundled with a docker-compose.yml that provides
-everything that is required to get started. 
+Also ensure your local system is configured properly.
+If you encounter issues while downloading Maven dependencies, you might check [this](https://stackoverflow.com/a/45644890)
+StackOverflow comment that might help you to fix the issue.
 
 **Use the following setup ONLY for development purposes! It is not production ready!**
 
-You need:
- - A Docker compatible system
- - Docker
- - Docker-Compose
- 
-The development setup is composed using the following software:
- - TeamCity
- - TeamCity Agent
- 
-To setup the containers and start them take a look at the commands below.
+### Building
+
+Use the build target of the Makefile to build the project:
+```
+make build
+```
+To build the project without `make`, simply run the `package` goal of Maven.
+
+### Running the TeamCity development server
+
+Start the local TeamCity server:
+```
+make up
+```
+
+Stop the local TeamCity server:
+```
+make up
+```
+
+Delete the containers of the local TeamCity server:
+```
+make down
+```
+
+Rebuild the plugin and restart the TeamCity server:
+```
+make redeploy
+```
+
+Rebuild the local Docker stack:
+```
+make rebuild_docker
+```
+
+## Development on Windows
+
+### Prerequisites
+To develop and build TC Discord Webhooks on Linux you need the following tools:
+ - Docker Desktop
+ - Maven 2
+
+**Use the following setup ONLY for development purposes! It is not production ready!**
+
+### Building
+
+To build the project without Docker, simply run the `package` goal of Maven:
+```
+mvn clean package
+```
+
+### Running the TeamCity development server
+
+To set up the containers and start the Docker stack, take a look at the commands below.
 After the containers have been started you can open TeamCity in your browser.
+TeamCity should be reachable at `http://localhost:8080/`.
 
-Setup:
-```docker-compose build```
+Start the local TeamCity server:
+```
+docker-compose up -d
+```
 
-Start:
-```docker-compose up -d```
+Stop the local TeamCity server:
+```
+docker-compose stop
+```
 
-Stop:
-```docker-compose stop```
-
-Finding the address of a container:
-```docker inspect <container-name>``` 
+Remove the local TeamCity server containers:
+```
+docker-compose down
+```
