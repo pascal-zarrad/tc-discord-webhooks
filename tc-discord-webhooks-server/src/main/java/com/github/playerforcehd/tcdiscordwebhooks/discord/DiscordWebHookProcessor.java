@@ -88,7 +88,7 @@ public class DiscordWebHookProcessor {
             httpPost.setEntity(new StringEntity(discordWebHookPayload, HTTP_CHARSET));
             String httpProxyHost = System.getProperty("http.proxyHost");
             String httpProxyPort = System.getProperty("http.proxyPort");
-            if (httpProxyHost!=null && httpProxyPort.trim().length()>0 && httpProxyPort!=null) {
+            if (httpProxyHost != null && httpProxyPort.trim().length() > 0 && httpProxyPort != null) {
                 Integer port = Integer.valueOf(httpProxyPort);
                 HttpHost proxy = new HttpHost(httpProxyHost, port, "http");
                 RequestConfig.Builder reqconfigconbuilder = RequestConfig.custom();
