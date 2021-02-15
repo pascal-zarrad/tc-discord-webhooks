@@ -24,6 +24,8 @@ Just create a webhook for one of your Discord channels as shown here: [Discord W
 Then enter the WebHook URL and a Username (recommended to also enter the name!) under "My Settings & Tools" -> "Notification Rules" -> "Discord WebHook".
 Configure your rules as normal. You should now receive notifications on Discord!
 
+If you use a proxy, ensure that `http.proxyHost` and `http.proxyPort` are set properly.
+
 ## Development on Linux
 
 ### Prerequisites
