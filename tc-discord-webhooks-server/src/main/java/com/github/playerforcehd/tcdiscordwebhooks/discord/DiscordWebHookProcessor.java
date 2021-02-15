@@ -17,6 +17,8 @@
 package com.github.playerforcehd.tcdiscordwebhooks.discord;
 
 import com.google.gson.Gson;
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -84,6 +86,16 @@ public class DiscordWebHookProcessor {
             httpPost.addHeader("Accept-Language", "en-US,en;q=0.5");
             httpPost.addHeader("Content-Type", "application/json");
             httpPost.setEntity(new StringEntity(discordWebHookPayload, HTTP_CHARSET));
+            String httpProxyHost = System.getProperty("http.proxyHost");
+            String httpProxyPort = System.getProperty("http.proxyPort");
+            if (httpProxyHost != null && httpProxyPort.trim().length() > 0 && httpProxyPort != null) {
+                int port = Integer.parseInt(httpProxyPort);
+                HttpHost proxy = new HttpHost(httpProxyHost, port, "http");
+                RequestConfig.Builder reqConfigBuilder = RequestConfig.custom();
+                reqConfigBuilder = reqConfigBuilder.setProxy(proxy);
+                RequestConfig config = reqConfigBuilder.build();
+                httpPost.setConfig(config);
+            }
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
                 responseCode = response.getStatusLine().getStatusCode();
             }
