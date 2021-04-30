@@ -173,7 +173,9 @@ public class DiscordNotificator implements Notificator {
         if (project != null) {
             projectName = project.getName();
         }
-        discordEmbedFields.add(new DiscordEmbedField("Project: ", projectName, true));
+        discordEmbedFields.add(new DiscordEmbedField("Benutzer: ", sRunningBuild.getAccessUser(), false));
+
+        discordEmbedFields.add(new DiscordEmbedField("Projekt: ", projectName, true));
         // Build name
         discordEmbedFields.add(new DiscordEmbedField("Build:", sRunningBuild.getBuildTypeName(), true));
         // Branch
@@ -193,7 +195,7 @@ public class DiscordNotificator implements Notificator {
     @Override
     public void notifyBuildStarted(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build started";
-        String description = "A build with the ID " + sRunningBuild.getBuildId() + " has been started!";
+        String description = "Ein Build wurde gestartt mit der ID " + sRunningBuild.getBuildId();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -212,8 +214,8 @@ public class DiscordNotificator implements Notificator {
 
     @Override
     public void notifyBuildSuccessful(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
-        String title = "Build succeeded!";
-        String description = "The build with the ID " + sRunningBuild.getBuildId() + " has succeeded!";
+        String title = "Build erfolgreich!";
+        String description = "Ein Build wurde Erfolgreich Beendet mit der ID " + sRunningBuild.getBuildId();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -233,7 +235,7 @@ public class DiscordNotificator implements Notificator {
     @Override
     public void notifyBuildFailed(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build failed";
-        String description = "The build with the ID " + sRunningBuild.getBuildId() + " has failed!";
+        String description = "Ein Build wurde nicht Erfolgreich Beendet mit der ID  " + sRunningBuild.getBuildId();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
