@@ -1,13 +1,13 @@
 # TC Discord WebHooks [![Build Status](https://travis-ci.org/pascal-zarrad/tc-discord-webhooks.svg?branch=master)](https://travis-ci.org/pascal-zarrad/tc-discord-webhooks)
 
 > **This plugin is in a community maintainance state**
-> 
+>
 > I use GitHub Actions instead of TeamCity right now and don't have time to maintain or update this plugin by myself.
 > I decided to discontinue the development of this plugin.
 > As of 2021/12/06, this plugin still works and can be installed manually.
-> 
+>
 > I won't provide any maintainance of the plugin by myself. If anyone wants to keep it up to date or contribute code (features, fixes, etc...), I'd be happy about that. Feel always free to do that if you want to.
-> I will continue to manage contributions and publish new versions of the plugin. 
+> I will continue to manage contributions and publish new versions of the plugin.
 
 ## About
 A TeamCity plugin which allows the easy creation of Discord WebHooks to notify users on a Discord server about the current build status of projects.
@@ -69,7 +69,7 @@ make up
 
 Stop the local TeamCity server:
 ```
-make up
+make stop
 ```
 
 Delete the containers of the local TeamCity server:
