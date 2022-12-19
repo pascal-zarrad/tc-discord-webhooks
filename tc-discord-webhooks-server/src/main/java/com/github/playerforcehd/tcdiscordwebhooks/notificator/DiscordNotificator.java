@@ -236,6 +236,15 @@ public class DiscordNotificator implements Notificator {
     public void notifyBuildFailed(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build failed";
         String description = "The build with the ID " + sRunningBuild.getBuildNumber() + " has failed!";
+        String Error = sRunningBuild.getFailureReason().getDescription();
+        // check len of error < 2000
+        if (Error.length() > 1800) {
+            Error = Error.substring(0, 1800);
+        }
+        description += "\n"
+                + "The build has failed because of the following reason: "
+                + Error;
+
         String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildNumber();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
