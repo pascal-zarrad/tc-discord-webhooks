@@ -193,8 +193,8 @@ public class DiscordNotificator implements Notificator {
     @Override
     public void notifyBuildStarted(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build started";
-        String description = "A build with the ID " + sRunningBuild.getBuildId() + " has been started!";
-        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildId();
+        String description = "A build with the ID " + sRunningBuild.getBuildNumber() + " has been started!";
+        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildNumber();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -214,8 +214,8 @@ public class DiscordNotificator implements Notificator {
     @Override
     public void notifyBuildSuccessful(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build succeeded!";
-        String description = "The build with the ID " + sRunningBuild.getBuildId() + " has succeeded!";
-        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildId();
+        String description = "The build with the ID " + sRunningBuild.getBuildNumber() + " has succeeded!";
+        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildNumber();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -235,8 +235,8 @@ public class DiscordNotificator implements Notificator {
     @Override
     public void notifyBuildFailed(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build failed";
-        String description = "The build with the ID " + sRunningBuild.getBuildId() + " has failed!";
-        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildId();
+        String description = "The build with the ID " + sRunningBuild.getBuildNumber() + " has failed!";
+        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildNumber();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -256,8 +256,8 @@ public class DiscordNotificator implements Notificator {
     @Override
     public void notifyBuildFailedToStart(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build failed to start";
-        String description = "The build with the ID " + sRunningBuild.getBuildId() + " has failed to start!";
-        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildId();
+        String description = "The build with the ID " + sRunningBuild.getBuildNumber() + " has failed to start!";
+        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildNumber();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -277,8 +277,8 @@ public class DiscordNotificator implements Notificator {
     @Override
     public void notifyLabelingFailed(@NotNull Build build, @NotNull VcsRoot vcsRoot, @NotNull Throwable throwable, @NotNull Set<SUser> users) {
         String title = "Labeling failed";
-        String description = "Labeling of build with the ID " + build.getBuildId() + " has failed!";
-        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + build.getBuildId();
+        String description = "Labeling of build with the ID " + build.getBuildNumber() + " has failed!";
+        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + build.getBuildNumber();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -298,8 +298,8 @@ public class DiscordNotificator implements Notificator {
     @Override
     public void notifyBuildFailing(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build is failing";
-        String description = "The build with the ID " + sRunningBuild.getBuildId() + " is failing!";
-        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildId();
+        String description = "The build with the ID " + sRunningBuild.getBuildNumber() + " is failing!";
+        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildNumber();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
@@ -319,8 +319,8 @@ public class DiscordNotificator implements Notificator {
     @Override
     public void notifyBuildProbablyHanging(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build is probably hanging";
-        String description = "The build with the ID " + sRunningBuild.getBuildId() + " is probably hanging!";
-        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildId();
+        String description = "The build with the ID " + sRunningBuild.getBuildNumber() + " is probably hanging!";
+        String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildNumber();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
