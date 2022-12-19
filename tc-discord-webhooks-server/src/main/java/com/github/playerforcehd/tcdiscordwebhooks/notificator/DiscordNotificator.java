@@ -22,6 +22,7 @@ import com.github.playerforcehd.tcdiscordwebhooks.discord.embeds.DiscordEmbed;
 import com.github.playerforcehd.tcdiscordwebhooks.discord.embeds.DiscordEmbedColor;
 import com.github.playerforcehd.tcdiscordwebhooks.discord.embeds.DiscordEmbedField;
 import jetbrains.buildServer.Build;
+import jetbrains.buildServer.BuildProblemData;
 import jetbrains.buildServer.notification.Notificator;
 import jetbrains.buildServer.notification.NotificatorRegistry;
 import jetbrains.buildServer.responsibility.ResponsibilityEntry;
@@ -235,22 +236,27 @@ public class DiscordNotificator implements Notificator {
     @Override
     public void notifyBuildFailed(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
         String title = "Build failed";
-        String description = "The build with the ID " + sRunningBuild.getBuildNumber() + " has failed!";
-        String Error = sRunningBuild.getFailureReason().getDescription();
-        // check len of error < 2000
-        if (Error.length() > 1800) {
-            Error = Error.substring(0, 1800);
+        StringBuilder description = new StringBuilder("The build with the ID " + sRunningBuild.getBuildNumber() + " has failed!");
+
+        description.append("\n" + "The build has failed with the following reason: ");
+        // Iterate through the failure reasons of the running build
+
+        // Append the failure reason to the description
+        for (BuildProblemData failureReason : sRunningBuild.getFailureReasons())
+            description.append("\n").append(failureReason.getDescription());
+
+        // Check the length of the description
+        if (description.length() > 1800) {
+            // Truncate the description if it is too long
+            description = new StringBuilder(description.substring(0, 1800));
         }
-        description += "\n"
-                + "The build has failed because of the following reason: "
-                + Error;
 
         String url = this.sBuildServer.getRootUrl() + "/viewLog.html?buildId=" + sRunningBuild.getBuildNumber();
         DiscordWebHookPayload discordWebHookPayload = new DiscordWebHookPayload();
         discordWebHookPayload.setEmbeds(new DiscordEmbed[]{
                 new DiscordEmbed(
                         title,
-                        description,
+                    description.toString(),
                         url,
                         DiscordEmbedColor.RED,
                         null,
